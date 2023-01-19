@@ -7,6 +7,17 @@
     <title>LogIn</title>
 </head>
 <body>
-    <h1>SignUp successfully</h1>
+    <h1>Login User</h1>
+    <form onsubmit="login(event)">
+        <label for="email">Enter Email:</label>
+        <input type="text" id="email" required/>
+        <br>
+        <label for="password">Enter Email:</label>
+        <input type="text" id="email" required/>
+        <button id="submit">Login User</button>
+        <div>New User??<a href="../Signup/signup.html">SignUp</a></div>
+    </form>
+    <script src="./login.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.3/axios.min.js"></script>
 </body>
 </html>

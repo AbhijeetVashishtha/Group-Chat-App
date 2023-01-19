@@ -5,11 +5,11 @@ exports.signUp = async (req,res,next) => {
     try{
         const {name, email, number ,password} = req.body;
         if(!name || !email || !number || !password){
-            req.status(400).json({message: 'Require all fields'});
+           return req.status(400).json({message: 'Require all fields'});
         }
         const user = await User.findAll({where: {email}});
         if(user.length>0){
-            res.status(404).json({message: 'User Already Exist'});
+           return res.status(404).json({message: 'User already exist'});
         }
         else{
             bcrypt.hash(password, 10, async (err, hash) => {

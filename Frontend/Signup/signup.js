@@ -16,10 +16,12 @@ async function signup(event){
     const response = await axios.post('http://localhost:3000/user/signup', userDetails);
         if(response.status === 200)
         {
+            alert('User successfully created. Please Login');
             window.location.href = '../login/login.html';
             console.log("User Successfully Registered");
         }
         else if(response.status === 404){
+            alert('User already Exist');
             console.log(response.data.message);
         }
         else{
