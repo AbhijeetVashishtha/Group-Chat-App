@@ -13,7 +13,7 @@ async function login(event){
         alert(response.data.message);
         console.log(response.data);
         localStorage.setItem('token', response.data.token);
-        window.location.href = '..';
+        window.location.href = '../chat/chat.html';
     }
     catch(err){
         console.log(JSON.stringify(err));
