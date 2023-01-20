@@ -61,7 +61,7 @@ const logIn = async (req,res,next) => {
 }
 
 function generateToken(id){
-    return jwt.sign({userId:id}, 'mytoken');    
+    return jwt.sign({userId:id}, process.env.TOKEN_SECRET);    
 }
 
 module.exports = {

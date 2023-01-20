@@ -11,3 +11,14 @@ async function sendMessage(event) {
         console.log('Error while sending message', err);
     }
 }
+
+
+window.addEventListener('DOMContentLoaded', async() => {
+    try{
+        const res = await axios.get('http://localhost:3000/message/fetchmessage');
+        console.log(res.data.message);
+    }
+    catch(err){
+        console.log(err);
+    }
+})

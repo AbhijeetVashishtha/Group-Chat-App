@@ -29,3 +29,16 @@ function isValidMessage(message){
         return false;
     }
 }
+
+
+exports.fetchMessage = async (req,res) => {
+    try{
+        const messages = await Message.findAll();
+        res.status(200).json({message: messages});
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json({message: "Something went wrong"})
+    }
+}
+
