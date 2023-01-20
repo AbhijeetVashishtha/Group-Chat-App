@@ -15,10 +15,37 @@ async function sendMessage(event) {
 
 window.addEventListener('DOMContentLoaded', async() => {
     try{
-        const res = await axios.get('http://localhost:3000/message/fetchmessage');
-        console.log(res.data.message);
+        setInterval(() => {
+            fetchMessages();
+        },1000)
     }
     catch(err){
         console.log(err);
     }
-})
+});
+
+async function fetchMessages() {
+    try{
+        const res = await axios.get('http://localhost:3000/message/fetchmessage');
+        if(res.status === 200){
+            const messages = res.data.message;
+            showChatToUser(messages);
+        }
+    }
+    catch(err){
+        console.log(err);
+    }
+}
+
+function showChatToUser(messages){
+    try{
+        const chats = document.getElementById('chat-body');
+        chats.innerHTML += '';
+        messages.forEach((message) => {
+            chats.innerHTML += message.message + `<br>`;
+        }); 
+    }
+    catch(err){
+        console.log(err);
+    }
+}
