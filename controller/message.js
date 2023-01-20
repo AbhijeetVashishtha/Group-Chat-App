@@ -1,4 +1,5 @@
 const Message = require('../models/message');
+const {Op} = require('sequelize');
 
 exports.sendMessage = async (req,res) => {
     try{
@@ -33,8 +34,10 @@ function isValidMessage(message){
 
 exports.fetchMessage = async (req,res) => {
     try{
-        const messages = await Message.findAll();
-        res.status(200).json({message: messages});
+        const lastMsgId = req.query.lastMsgId;
+        console.log('Message ID in Backend', lastMsgId);
+        const messages = await Message.findAll({where: {id: {[Op.gt]: lastMsgId}}});    // gt is greater Than and op is name of sequelize library
+        res.status(200).json({message:messages});
     }
     catch(err){
         console.log(err);
