@@ -9,15 +9,21 @@
 </head>
 <body>
     <header><h1>Chat Box</h1></header>
+    <div id="group-form">
+        <a href="../chatgroup/chatgroup.html">Add Group</a>
+    </div>
+    <button type="submit" id="signOut">SignOut</button>
+    <div id="chat-list"></div>
     <div id="chat-body"></div>
     <footer>
         <form onsubmit="sendMessage(event)">
         <label id="lmessage">Enter Your Message:</label>
         <input type="text" id="message" style="width: 500px;">
-        <button type="submit">Send</button>
+        <button type="submit" id="message-button">Send</button>
         </form>
     </footer>
 </body>     
     <script src="./chat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.3/axios.min.js"></script>
 </html>
+

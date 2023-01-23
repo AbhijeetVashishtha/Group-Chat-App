@@ -32,6 +32,6 @@ form {
     font-style: italic;
 }
 
-button {
+#message-button {
     border-radius: 10px;
 }

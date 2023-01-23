@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.post('/send',middlewareAuthentication.authenticate, messageController.sendMessage);
 
-router.get('/fetchmessage', messageController.fetchMessage);
+router.get('/getallmessages',middlewareAuthentication.authenticate ,messageController.getAllMessage);
+
+// router.get('/getusers', messageController.getUsers);
 
 module.exports = router;

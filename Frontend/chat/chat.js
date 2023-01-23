@@ -1,10 +1,15 @@
+const token = localStorage.getItem('token');
+let nam = '';
+const allmsgs = document.querySelector('#chat-body');
+const welcomeUser = document.querySelector('#welcome-user'); 
+
 async function sendMessage(event) {
     event.preventDefault();
     try{
-        const token = localStorage.getItem('token');
         const message = document.getElementById('message').value;
         console.log(message);
         const response = await axios.post('http://localhost:3000/message/send',{message: message}, {headers:{'Authorization':token}});
+        message.value = '';
         console.log(response.data.message);
     }
     catch(err){
@@ -13,58 +18,35 @@ async function sendMessage(event) {
 }
 
 
-window.addEventListener('DOMContentLoaded', async() => {
-    try{
-        // setInterval(() => {
-        //     fetchMessages();
-        // },1000)
-        fetchMessages();
-    }
-    catch(err){
-        console.log(err);
-    }
-});
 
-async function fetchMessages() {
+setInterval(async () => {
     try{
-        let oldMsg = JSON.parse(localStorage.getItem('messages'));
-        let lastMsgId;
-        if(oldMsg === 0)
-        {
-            oldMsg = [];
-            lastMsgId = 0;
+    const response = await axios.get('http://localhost:3000/message/getallmessages', {headers: {'Authorization': token}});
+    // console.log(response.data);
+    if(response.status === 200)
+    {
+        let res = '';
+        console.log(response.data.data);
+        for(let i = 0;i<response.data.data.length;i++){
+            res += `<div>
+                <span>${response.data.data[i].username}: </span>
+                <span>${response.data.data[i].message}</span>
+            </div>`;
         }
-        if(lastMsgId !== 0)
-        {
-            lastMsgId = oldMsg[oldMsg.length - 1].id;
-        }
-        console.log('Last Message ID', lastMsgId);
-        const res = await axios.get(`http://localhost:3000/message/fetchmessage/?lastMsgId=${lastMsgId}`);
-        if(res.status === 200){
-            const newmessages = res.data.message;
-            let messages = oldMsg.concat(newmessages);
-            if(messages.length > 10)
-            {
-                messages = messages.slice(messages.length - 10, messages.length);
-            }
-            localStorage.setItem('messages', JSON.stringify(messages));
-            showChatToUser(messages);
-        }
+        allmsgs.innerHTML = res;
     }
-    catch(err){
-        console.log(err);
+    else{
+        throw new Error('Not Able to get messages');
     }
 }
-
-function showChatToUser(messages){
-    try{
-        const chats = document.getElementById('chat-body');
-        chats.innerHTML += '';
-        messages.forEach(message => {
-            chats.innerHTML += message.message + `<br>`;
-        }); 
-    }
-    catch(err){
-        console.log(err);
-    }
+catch(err) {
+console.log(err);
 }
+},1000);
+
+
+document.getElementById('signOut').onclick = () => {
+    localStorage.clear();
+    window.location.href = "../login/login.html";
+}
+

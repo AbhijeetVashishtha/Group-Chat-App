@@ -1,13 +1,18 @@
 const Message = require('../models/message');
-const {Op} = require('sequelize');
+const User = require('../models/user');
 
 exports.sendMessage = async (req,res) => {
     try{
+        let id = req.user.id;
+        let username = req.user.username;
+        console.log('Message Sender name', username);
         const message = req.body.message;
         console.log(message);
         if(isValidMessage(message)){
             await req.user.createMessage({
                 message: message,
+                username: username,
+                userId: id
             });
             res.status(200).json({message: 'Message saved to Database'});
         }
@@ -32,16 +37,27 @@ function isValidMessage(message){
 }
 
 
-exports.fetchMessage = async (req,res) => {
+exports.getAllMessage = async (req,res) => {
     try{
-        const lastMsgId = req.query.lastMsgId;
-        console.log('Message ID in Backend', lastMsgId);
-        const messages = await Message.findAll({where: {id: {[Op.gt]: lastMsgId}}});    // gt is greater Than and op is name of sequelize library
-        res.status(200).json({message:messages});
+        const result = await Message.findAll();
+        // console.log(result);
+        res.status(200).json({data: result, message: 'Get All Messages'});
     }
     catch(err){
         console.log(err);
-        res.status(500).json({message: "Something went wrong"})
+        res.status(500).json({message: "Something Went Wrong"});
     }
 }
+
+// exports.getUsers = async (req,res) => {
+//     console.log(req.user.id);
+//     await User.findAll({where: { id: req.user.id}})
+//     .then((result) => {
+//         res.status(200).json(result);
+//     }) 
+//     .catch((err) => {
+//         console.log(err);
+//         res.status(500).json({message: "Something Went wrong"});
+//     })
+// }
 
