@@ -10,7 +10,7 @@ exports.addParticipation = async (req,res) => {
         let userID = req.user.id;
         console.log(userID, gid);
         let isadmin = await UserGroup.findOne({where:{userId:userID, groupnameId: gid}});
-        if(isadmin.admin === true){
+        if(isadmin.admin == true){
             let checkUser = await User.findOne({where: {email:email}});
             if(checkUser){
                 let groupData = await Group.findOne({where: {id:gid}});
@@ -76,5 +76,71 @@ exports.getGrpMessages = async (req,res) => {
     catch(err){
         console.log(err);
         res.status(500).json({err});
+    }
+}
+
+exports.getGrpParticipants = async (req,res) => {
+    try{
+        let gid = req.params.id;
+        let uid = req.user.id;
+
+        let userFound = await UserGroup.findOne({where: {userId: uid, groupnameId: gid}});
+        if(userFound){
+            const result = await UserGroup.findAll({where: {groupnameId: gid}});
+            res.status(200).json({data: result, message: "Successfully get all Participants"});
+        }
+        else{
+            res.status(404).json({message: "You are not part of this group"});
+        }
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json({message: "Something Went Wrong"});
+    }
+} 
+
+exports.makeUserAdmin = async (req,res) => {
+    try{
+        let gid = req.params.id;
+        let uid = req.user.id;
+
+        let {userIdUpdate} = req.body;
+
+        let check = await UserGroup.findOne({where: {userId: uid, groupnameId: gid}});
+
+        if(check.admin == true) {
+            const UpdateOld = await UserGroup.update({admin: false}, {where: {userId: uid, groupnameid: gid}});
+            const UpdateNew = await UserGroup.update({admin: true}, {where: {userId: userIdUpdate, groupnameId: gid}});
+            res.status(200).json({UpdateNew, message: "User Successfully updated"});
+        }
+        else{
+            res.status(401).json({message: "You are not admin, tell admin to update"});
+        }
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json({err, message: "Something went wrong"});
+    }
+}
+
+exports.removeUser = async (req,res) => {
+    try{
+        let gid = req.params.id;
+        let uid = req.user.id;
+
+        let {userIdDelete} = req.body;
+
+        let check = await UserGroup.findOne({where: {userId: uid, groupnameId: gid}});
+        if(check.admin == true){
+            const remove = await UserGroup.destroy({where: {userId: userIdDelete, groupnameId: gid}});
+            res.status(200).json({remove, message: 'User Successfully deleted'});
+        }
+        else{
+            res.status(401).json({message: "you are not admin ask Admin to make you admin"});
+        }
+    }
+    catch(err){
+        console.log(err);
+        res.status(500).json({err, message: "Something went wrong"});
     }
 }
