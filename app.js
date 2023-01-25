@@ -1,4 +1,9 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const morgan = require('morgan');
+const helmet = require('helmet');
+const compression = require('compression');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
@@ -19,14 +24,24 @@ const messageRoutes = require('./routes/message');
 const groupRoutes = require('./routes/creategroup');
 const contentRoutes = require('./routes/groupmessage');
 
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flag: 'a'});
+
 
 app.use(express.json());
 app.use(cors());
+app.use(morgan('combined', {stream: accessLogStream}));
+app.use(helmet());
+app.use(compression());
 
 app.use('/user', userRoutes);
 app.use('/message', messageRoutes);
 app.use('/group', groupRoutes);
 app.use('/content', contentRoutes);
+
+app.use((req,res) => {
+    res.sendFile(path.join(__dirname, `Frontend/${req.url}`));
+});
+
 
 User.hasMany(Message);
 Message.belongsTo(User);
@@ -40,7 +55,7 @@ GroupMessage.belongsTo(User);
 
 sequelize.sync()
 .then((result) => {
-    app.listen(3000);
+    app.listen(process.env.PORT || 3000);
 })
 .catch(err => {
     console.log(err);
