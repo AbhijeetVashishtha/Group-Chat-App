@@ -8,7 +8,7 @@ async function sendMessage(event) {
     try{
         const message = document.getElementById('message').value;
         console.log(message);
-        const response = await axios.post('http://localhost:3000/message/send',{message: message}, {headers:{'Authorization':token}});
+        const response = await axios.post('http://13.233.91.195:3000/message/send',{message: message}, {headers:{'Authorization':token}});
         message.value = '';
         console.log(response.data.message);
     }
@@ -21,7 +21,7 @@ async function sendMessage(event) {
 
 setInterval(async () => {
     try{
-    const response = await axios.get('http://localhost:3000/message/getallmessages', {headers: {'Authorization': token}});
+    const response = await axios.get('http://13.233.91.195:3000/message/getallmessages', {headers: {'Authorization': token}});
     // console.log(response.data);
     if(response.status === 200)
     {

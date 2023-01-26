@@ -17,6 +17,7 @@ exports.addParticipation = async (req,res) => {
                 let grpName = groupData.groupname;
                 let grpID = groupData.id;
                 let uname = checkUser.username;
+
                 const result = await UserGroup.create({admin: admin, groupname: grpName, name: uname, userId: checkUser.id, groupnameId: grpID});
                 res.status(200).json({result,message: "User successfully added"});
             }
@@ -111,7 +112,7 @@ exports.makeUserAdmin = async (req,res) => {
         if(check.admin == true) {
             const UpdateOld = await UserGroup.update({admin: false}, {where: {userId: uid, groupnameid: gid}});
             const UpdateNew = await UserGroup.update({admin: true}, {where: {userId: userIdUpdate, groupnameId: gid}});
-            res.status(200).json({UpdateNew, message: "User Successfully updated"});
+            res.status(200).json({UpdateNew, UpdateOld, message: "User Successfully updated"});
         }
         else{
             res.status(401).json({message: "You are not admin, tell admin to update"});
